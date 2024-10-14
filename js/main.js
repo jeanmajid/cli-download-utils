@@ -55,12 +55,12 @@ export function downloadFile(url, filePath, onProgress, options = {}) {
             const elapsedSeconds = (currentTime - startTime) / 1000;
             const speedMBS = downloadedLength / 1048576 / elapsedSeconds;
             const percentage = (downloadedLength / totalLength) * 100;
-            const eta = (totalLength - downloadedLength) / (speedMBS * 1048576);
+            const etaSeconds = (totalLength - downloadedLength) / (speedMBS * 1048576);
 
             let etaString;
             for (const { unit, seconds } of timeUnits) {
-                if (eta >= seconds) {
-                    const value = Math.floor(eta / seconds);
+                if (etaSeconds >= seconds) {
+                    const value = Math.floor(etaSeconds / seconds);
                     etaString = `${value} ${unit}${value !== 1 ? "s" : ""}`;
                     break;
                 }
@@ -77,7 +77,7 @@ export function downloadFile(url, filePath, onProgress, options = {}) {
         response.on("end", () => {
             clearInterval(progressInterval);
             file.end();
-            onProgress({ percentage: 100, speedMBS: 0, etaString: "0s", eta: 0, downloadedLength, totalLength });
+            onProgress({ percentage: 100, speedMBS: 0, etaString: "0s", etaSeconds: 0, downloadedLength, totalLength });
         });
 
         response.on("error", (err) => {
